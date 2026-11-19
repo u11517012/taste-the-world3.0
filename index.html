@@ -1713,22 +1713,7 @@
         }
 
         const uaeProg = userProgress['uae'] || {};
-        if (uaeProg.stage1 && uaeProg.stage2 && uaeProg.stage3) {
-          const uaeC = worldData.find(c => c.id === 'uae');
-          const greeceC = worldData.find(c => c.id === 'greece');
-          if (uaeC && greeceC) {
-            const p1 = projection([uaeC.lon, uaeC.lat]);
-            const p2 = projection([greeceC.lon, greeceC.lat]);
-            const dx = p2[0] - p1[0];
-            const dy = p2[1] - p1[1];
-            const dr = Math.sqrt(dx * dx + dy * dy) * 1.5;
-            flightG.append("path")
-              .attr("id", "cross-asia-europe-route")
-              .attr("d", `M ${p1[0]} ${p1[1]} A ${dr} ${dr} 0 0 1 ${p2[0]} ${p2[1]}`)
-              .attr("class", "flight-line-cross");
-          }
-        }
-      } else {
+              } else {
         const currentContinentCountries = worldData.filter(c => c.continent === currentContinentKey);
 
         for (let i = 0; i < currentContinentCountries.length - 1; i++) {
@@ -1770,8 +1755,8 @@
       worldData.forEach((c, idx) => {
         let isVisibleInCurrentView = false;
         if (currentContinentKey === 'world') {
-          isVisibleInCurrentView = (c.mainHub || (c.id === 'uae' && (userProgress['uae']?.stage3)));
-        } else if (currentContinentKey === 'americas') {
+          isVisibleInCurrentView = c.mainHub;
+        }else if (currentContinentKey === 'americas') {
           const targetWordType = (americasSubRegion === 'north') ? 'short' : 'long';
           isVisibleInCurrentView = (c.continent === 'americas' && c.wordType === targetWordType);
         } else {
@@ -1812,14 +1797,30 @@
             <img class="flag-img" src="${flagUrl}" alt="${c.name}" />
             ${!isPlayable ? '<div class="lock-overlay">🔒</div>' : ''}
           </div>
-          <div class="pin-label">${c.name} ${statusText ? `(${statusText})` : ''}</div>
+         <div class="pin-label">${currentContinentKey === 'world' ? `🔍 進入${continentChineseNames[c.continent]} (${c.name})` : `${c.name} ${statusText ? `(${statusText})` : ''}`}</div>
         `;
 
         pin.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
 
-          // 洲際海關檢查：進入新大洲第一站前，需在上一洲累積至少 3 顆副本星
+          // 🌐 全球俯視圖：點擊各大洲樞紐國直接放大進入該大洲視野
+          if (currentContinentKey === 'world') {
+            // 若該大洲尚未開放（副本星不足），先檢查海關門檻並提示
+            if (idx > 0) {
+              const prevCountry = worldData[idx - 1];
+              const gate = checkCrossContinentGate(prevCountry.continent, c.continent);
+              if (!gate.allowed && !isPlayable) {
+                alert(`🛂 【${gate.toName}海關通行證不足】\n\n進入「${gate.toName}」航線前，需先在「${gate.fromName}」累積至少 ${gate.requiredStars} 顆副本星（目前：${gate.currentStars} / ${gate.requiredStars} ⭐）！\n\n💡 請先前往【${gate.fromName}】挑戰「🔥 美食暴走」或「💣 廚房炸彈」收集星星吧！`);
+                focusContinent(prevCountry.continent);
+                return;
+              }
+            }
+            focusContinent(c.continent);
+            return;
+          }
+
+          // 🗺️ 大洲詳細地圖視圖：點擊國家開啟關卡選單
           if (isPlayable && !mainCleared && idx > 0) {
             const prevCountry = worldData[idx - 1];
             const gate = checkCrossContinentGate(prevCountry.continent, c.continent);
@@ -1831,13 +1832,10 @@
           }
           if (isPlayable) {
             openLevelModal(c);
-          } else if (currentContinentKey === 'world') {
-            focusContinent(c.continent);
           } else {
             alert(`🔒 【${c.name}】尚未開航！請先通關前面的國家航線。`);
           }
         });
-
 pinLayer.appendChild(pin);
       });
 
