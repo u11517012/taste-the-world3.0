@@ -87,6 +87,40 @@
     .continent-btn:hover, .continent-btn.active {
       background: var(--gold); color: var(--navy); font-weight: bold; transform: translateY(-1px);
     }
+.americas-subbar {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 35;
+      background: rgba(17, 27, 39, 0.92);
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      padding: 10px 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      align-items: stretch;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+      backdrop-filter: blur(4px);
+    }    .americas-subbtn {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 5px 14px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .americas-subbtn:hover {
+      background: rgba(242, 169, 59, 0.35);
+    }
+    .americas-subbtn.active {
+      background: var(--gold);
+      color: var(--navy);
+      border-color: var(--gold);
+    }
 
     .view-container { position: relative; flex: 1; overflow: hidden; }
     .view { width: 100%; height: 100%; position: absolute; top:0; left:0; display: none; }
@@ -145,7 +179,7 @@
       display: flex; 
       flex-direction: column; 
       align-items: center; 
-      transition: transform 0.1s ease;
+      transition: box-shadow 0.2s ease, opacity 0.2s ease;
       z-index: 25;
     }
     
@@ -492,9 +526,9 @@
     <button class="continent-btn active" id="cbtn-world" onclick="focusContinent('world')">🌐 全球俯瞰視圖</button>
     <button class="continent-btn" id="cbtn-asia" onclick="focusContinent('asia')">🌏 亞洲 (10 階段指法晉級)</button>
     <button class="continent-btn" id="cbtn-europe" onclick="focusContinent('europe')">🌍 歐洲 (全鍵盤隨機進階)</button>
-    <button class="continent-btn" id="cbtn-north-america" onclick="focusContinent('north-america')">🌎 北美洲 (基礎單字)</button>
-    <button class="continent-btn" id="cbtn-south-america" onclick="focusContinent('south-america')">🌎 南美洲 (進階長單字)</button>
-    <button class="continent-btn" id="cbtn-africa-oceania" onclick="focusContinent('africa-oceania')">🌍 非洲與大洋洲 (實用短句與長句)</button>
+    <button class="continent-btn" id="cbtn-americas" onclick="focusContinent('americas')">🌎 美洲 (北美基礎單字 ➔ 南美長單字)</button>
+    <button class="continent-btn" id="cbtn-africa" onclick="focusContinent('africa')">🌍 非洲 (實用短句)</button>
+    <button class="continent-btn" id="cbtn-oceania" onclick="focusContinent('oceania')">🌏 大洋洲 (經典長句)</button>
   </div>
 
   <div class="view-container">
@@ -508,6 +542,12 @@
         </svg>
         <div id="pinLayer"></div>
 
+        <!-- 美洲區域分區選單（美洲維持單一大洲，進入後可切換北美洲 / 南美洲關卡視角） -->
+        <div class="americas-subbar" id="americasSubBar">
+          <span style="color:var(--gold); font-size:11px; font-weight:bold; padding-left:4px;">🌎 美洲航線：</span>
+          <button class="americas-subbtn active" id="subbtn-north" onclick="switchAmericasRegion('north')">🍁 北美洲 (8國 · 基礎單字)</button>
+          <button class="americas-subbtn" id="subbtn-south" onclick="switchAmericasRegion('south')">🦙 南美洲 (12國 · 進階長單字)</button>
+        </div>
         <div class="pilot-guide-box">
           <div class="pilot-avatar-wrap" id="pilotAvatarWrap">
             <img id="guideAvatarSprite" class="avatar-img" src="" alt="Guide Avatar" />
@@ -874,52 +914,52 @@
       { id: 'uk', name: '🇬🇧 英國', code: 'gb', continent: 'europe', lon: -0.1, lat: 51.5, mainHub: false, badgeIcon: '🐟', badgeTitle: '🇬🇧 炸魚薯條', badgeDesc: '第9階：8 碼長字串無停頓隨機！', foodIntro: '金黃酥脆炸魚搭配外酥內軟大薯條。', darkFood: '暗黑彩蛋：【仰望星空派佐薄荷醬】—— 死不瞑目的魚頭正從派皮裡深情看著你！' },
       { id: 'spain', name: '🇪🇸 西班牙', code: 'es', continent: 'europe', lon: -3.7, lat: 40.4, mainHub: false, badgeIcon: '🥘', badgeTitle: '🇪🇸 番紅花海鮮飯', badgeDesc: '第10階：歐洲終極全鍵盤大滿貫！', foodIntro: '番紅花米飯鋪滿蝦貝淡菜海鮮盛宴。', darkFood: '暗黑彩蛋：【墨魚汁巧克力海鮮飯】—— 吃完牙齒全黑，笑起來像剛挖完煤礦！' },
 
-      // 🌎 3. 北美洲 10 國
-      { id: 'usa', name: '🇺🇸 美國', code: 'us', continent: 'north-america', lon: -95.7, lat: 37.0, mainHub: true, badgeIcon: '🍔', badgeTitle: '🇺🇸 雙層牛肉漢堡', badgeDesc: '基礎單字：burger, cheese, beef', foodIntro: '多汁牛肉排搭配熔化切達起司。' },
-      { id: 'canada', name: '🇨🇦 加拿大', code: 'ca', continent: 'north-america', lon: -106.3, lat: 56.1, mainHub: false, badgeIcon: '🍟', badgeTitle: '🇨🇦 普丁肉汁薯條', badgeDesc: '基礎單字：fries, gravy, maple', foodIntro: '香濃肉汁與起司塊淋在熱騰騰薯條上。' },
-      { id: 'mexico', name: '🇲🇽 墨西哥', code: 'mx', continent: 'north-america', lon: -102.5, lat: 23.6, mainHub: false, badgeIcon: '🌮', badgeTitle: '🇲🇽 塔可玉米餅', badgeDesc: '基礎單字：taco, salsa, corn', foodIntro: '香辣碎肉搭配莎莎醬與玉米餅。' },
-      { id: 'cuba', name: '🇨🇺 古巴', code: 'cu', continent: 'north-america', lon: -77.7, lat: 21.5, mainHub: false, badgeIcon: '🥪', badgeTitle: '🇨🇺 古巴烤三明治', badgeDesc: '基礎單字：pork, bread, toast', foodIntro: '酸黃瓜起司烤豬肉熱壓三明治。' },
-      { id: 'jamaica', name: '🇯🇲 牙買加', code: 'jm', continent: 'north-america', lon: -77.2, lat: 18.1, mainHub: false, badgeIcon: '🍗', badgeTitle: '🇯🇲 煙燻香辣雞', badgeDesc: '基礎單字：jerk, chicken, spice', foodIntro: '特製香料醃製長時木炭煙燻烤雞。' },
-      { id: 'costa_rica', name: '🇨🇷 哥斯達黎加', code: 'cr', continent: 'north-america', lon: -83.7, lat: 9.7, mainHub: false, badgeIcon: '🍛', badgeTitle: '🇨🇷 黑豆佐香米飯', badgeDesc: '基礎單字：rice, beans, fruit', foodIntro: '哥斯達黎加營養滿分的經典黑豆飯。' },
-      { id: 'panama', name: '🇵🇦 巴拿馬', code: 'pa', continent: 'north-america', lon: -80.1, lat: 8.5, mainHub: false, badgeIcon: '🍲', badgeTitle: '🇵🇦 海鮮大繪湯', badgeDesc: '基礎單字：soup, fish, fresh', foodIntro: '運河匯集的新鮮海鮮濃郁蔬菜湯。' },
-      { id: 'dominican', name: '🇩🇴 多明尼加', code: 'do', continent: 'north-america', lon: -70.1, lat: 18.7, mainHub: false, badgeIcon: '🍌', badgeTitle: '🇩🇴 蒜香芭蕉泥', badgeDesc: '基礎單字：sweet, garlic, mash', foodIntro: '炸芭蕉搗成泥佐培根蒜香醬。' },
-      { id: 'haiti', name: '🇭🇹 海地', code: 'ht', continent: 'north-america', lon: -72.2, lat: 18.9, mainHub: false, badgeIcon: '🍚', badgeTitle: '🇭🇹 蘑菇香米飯', badgeDesc: '基礎單字：mushroom, rice, cook', foodIntro: '黑蘑菇高湯煮出的特色香米飯。' },
-      { id: 'belize', name: '🇧🇿 貝里斯', code: 'bz', continent: 'north-america', lon: -88.4, lat: 17.1, mainHub: false, badgeIcon: '🥧', badgeTitle: '🇧🇿 肉派小吃', badgeDesc: '單字整合：pie, meat, oven', foodIntro: '金黃酥脆包入香辣燉肉的國民小吃。' },
+// 🌎 3. 美洲 20 國（北美洲 8 國寬鬆排列 ➔ 南美洲 12 國進階長單字，總數維持 20 國）
+      { id: 'canada', name: '🇨🇦 加拿大', code: 'ca', continent: 'americas', wordType: 'short', lon: -106.3, lat: 55.0, mainHub: true, badgeIcon: '🍟', badgeTitle: '🇨🇦 普丁肉汁薯條', badgeDesc: '基礎單字：fries, gravy, maple', foodIntro: '香濃肉汁與起司塊淋在熱騰騰薯條上。' },
+      { id: 'usa', name: '🇺🇸 美國', code: 'us', continent: 'americas', wordType: 'short', lon: -98.0, lat: 39.0, mainHub: false, badgeIcon: '🍔', badgeTitle: '🇺🇸 雙層牛肉漢堡', badgeDesc: '基礎單字：burger, cheese, beef', foodIntro: '多汁牛肉排搭配熔化切達起司。' },
+      { id: 'mexico', name: '🇲🇽 墨西哥', code: 'mx', continent: 'americas', wordType: 'short', lon: -102.5, lat: 24.0, mainHub: false, badgeIcon: '🌮', badgeTitle: '🇲🇽 塔可玉米餅', badgeDesc: '基礎單字：taco, salsa, corn', foodIntro: '香辣碎肉搭配莎莎醬與玉米餅。' },
+      { id: 'belize', name: '🇧🇿 貝里斯', code: 'bz', continent: 'americas', wordType: 'short', lon: -90.2, lat: 16.5, mainHub: false, badgeIcon: '🥧', badgeTitle: '🇧🇿 肉派小吃', badgeDesc: '單字整合：pie, meat, oven', foodIntro: '金黃酥脆包入香辣燉肉的國民小吃。' },
+      { id: 'costa_rica', name: '🇨🇷 哥斯達黎加', code: 'cr', continent: 'americas', wordType: 'short', lon: -85.0, lat: 10.5, mainHub: false, badgeIcon: '🍛', badgeTitle: '🇨🇷 黑豆佐香米飯', badgeDesc: '基礎單字：rice, beans, fruit', foodIntro: '哥斯達黎加營養滿分的經典黑豆飯。' },
+      { id: 'panama', name: '🇵🇦 巴拿馬', code: 'pa', continent: 'americas', wordType: 'short', lon: -78.5, lat: 8.2, mainHub: false, badgeIcon: '🍲', badgeTitle: '🇵🇦 海鮮大繪湯', badgeDesc: '基礎單字：soup, fish, fresh', foodIntro: '運河匯集的新鮮海鮮濃郁蔬菜湯。' },
+      { id: 'cuba', name: '🇨🇺 古巴', code: 'cu', continent: 'americas', wordType: 'short', lon: -79.5, lat: 22.2, mainHub: false, badgeIcon: '🥪', badgeTitle: '🇨🇺 古巴烤三明治', badgeDesc: '基礎單字：pork, bread, toast', foodIntro: '酸黃瓜起司烤豬肉熱壓三明治。' },
+      { id: 'dominican', name: '🇩🇴 多明尼加', code: 'do', continent: 'americas', wordType: 'short', lon: -69.5, lat: 19.0, mainHub: false, badgeIcon: '🍌', badgeTitle: '🇩🇴 蒜香芭蕉泥', badgeDesc: '基礎單字：sweet, garlic, mash', foodIntro: '炸芭蕉搗成泥佐培根蒜香醬。' },
+      // --- 以下為南美洲 12 國（進階長單字） ---
+      { id: 'colombia', name: '🇨🇴 哥倫比亞', code: 'co', continent: 'americas', wordType: 'long', lon: -74.5, lat: 4.5, mainHub: false, badgeIcon: '🫓', badgeTitle: '🇨🇴 哥倫比亞起司餅', badgeDesc: '長單字：breakfast, kitchen, cheese', foodIntro: '玉米餅夾入滿滿拉絲起司香煎。' },
+      { id: 'venezuela', name: '🇻🇪 委內瑞拉', code: 've', continent: 'americas', wordType: 'long', lon: -66.5, lat: 7.2, mainHub: false, badgeIcon: '🫓', badgeTitle: '🇻🇪 玉米餅夾絲肉', badgeDesc: '南美長單字大滿貫考驗！', foodIntro: '酥脆玉米餅包入手撕牛肉與黃起司。' },
+      { id: 'guyana', name: '🇬🇾 蓋亞那', code: 'gy', continent: 'americas', wordType: 'long', lon: -59.0, lat: 5.0, mainHub: false, badgeIcon: '🥘', badgeTitle: '🇬🇾 加勒比胡椒燉肉', badgeDesc: '長單字：tropical, cinnamon, pepper', foodIntro: '木薯汁與香料慢火熬煮的傳統節慶燉肉。' },
+      { id: 'suriname', name: '🇸🇷 蘇利南', code: 'sr', continent: 'americas', wordType: 'long', lon: -55.2, lat: 4.0, mainHub: false, badgeIcon: '🍜', badgeTitle: '🇸🇷 花生醬芭蕉湯', badgeDesc: '長單字：peanut, plantain, delicious', foodIntro: '融合南美與南洋風味的濃郁花生湯。' },
+      { id: 'ecuador', name: '🇪🇨 厄瓜多', code: 'ec', continent: 'americas', wordType: 'long', lon: -78.5, lat: -1.8, mainHub: false, badgeIcon: '🦐', badgeTitle: '🇪🇨 赤道鮮蝦雞尾酒', badgeDesc: '長單字：tropical, cocktail, shrimp', foodIntro: '茄汁檸檬鮮蝦涼拌熱帶小吃。' },
+      { id: 'peru', name: '🇵🇪 秘魯', code: 'pe', continent: 'americas', wordType: 'long', lon: -75.0, lat: -9.5, mainHub: false, badgeIcon: '🥗', badgeTitle: '🇵🇪 檸檬生汁醃魚', badgeDesc: '長單字：pineapple, seafood, lemon', foodIntro: '檸檬汁醃製鮮魚佐紫洋蔥香菜。' },
+      { id: 'bolivia', name: '🇧🇴 玻利維亞', code: 'bo', continent: 'americas', wordType: 'long', lon: -64.0, lat: -16.5, mainHub: false, badgeIcon: '🍲', badgeTitle: '🇧🇴 高山燉肉湯', badgeDesc: '長單字：vegetable, potatoes, cooking', foodIntro: '高原蔬菜與牛肉慢燉的滋補濃湯。' },
+      { id: 'brazil', name: '🇧🇷 巴西', code: 'br', continent: 'americas', wordType: 'long', lon: -50.5, lat: -13.5, mainHub: false, badgeIcon: '🥩', badgeTitle: '🇧🇷 桑巴巴西窯烤', badgeDesc: '長單字：barbecue, delicious, steak', foodIntro: '粗鹽炭火慢烤 Picanha 頂級牛肉。' },
+      { id: 'paraguay', name: '🇵🇾 巴拉圭', code: 'py', continent: 'americas', wordType: 'long', lon: -58.0, lat: -23.5, mainHub: false, badgeIcon: '🧀', badgeTitle: '🇵🇾 帕瑪起司麵包', badgeDesc: '長單字：bakery, homemade, cheese', foodIntro: '木薯粉與起司烘烤出的香 Q 麵包。' },
+      { id: 'uruguay', name: '🇺🇾 烏拉圭', code: 'uy', continent: 'americas', wordType: 'long', lon: -55.0, lat: -32.5, mainHub: false, badgeIcon: '🥪', badgeTitle: '🇺🇾 烏拉圭巨無霸堡', badgeDesc: '長單字：sandwich, hamburger, gourmet', foodIntro: '牛排火腿起司蛋多層次豪華三明治。' },
+      { id: 'chile', name: '🇨🇱 智利', code: 'cl', continent: 'americas', wordType: 'long', lon: -71.5, lat: -34.5, mainHub: false, badgeIcon: '🥟', badgeTitle: '🇨🇱 智利牛肉烤包', badgeDesc: '長單字：chocolate, traditional, recipe', foodIntro: '包入牛肉洋蔥與橄欖的金黃烤餅包。' },
+      { id: 'argentina', name: '🇦🇷 阿根廷', code: 'ar', continent: 'americas', wordType: 'long', lon: -64.0, lat: -39.5, mainHub: false, badgeIcon: '🥩', badgeTitle: '🇦🇷 炭烤大牛排', badgeDesc: '長單字：restaurant, roasted, dinner', foodIntro: '青醬佐豪氣原塊炭烤牛排。' },      // 🌍 4. 非洲 5 國（由最西端向東南順向連線）
+      { id: 'senegal', name: '🇸🇳 塞內加爾', code: 'sn', continent: 'africa', lon: -17.4, lat: 14.7, mainHub: true, badgeIcon: '🍛', badgeTitle: '🇸🇳 塞內加爾魚香飯', badgeDesc: '短句：Enjoy your meal.', foodIntro: '西非經典番茄香料燉鮮魚與碎米飯。' },
+      { id: 'egypt', name: '🇪🇬 埃及', code: 'eg', continent: 'africa', lon: 30.8, lat: 26.8, mainHub: false, badgeIcon: '🍲', badgeTitle: '🇪🇬 庫沙利鷹嘴豆飯', badgeDesc: '短句：Welcome to Egypt!', foodIntro: '通心粉米飯鷹嘴豆佐香辣番茄醬。' },
+      { id: 'kenya', name: '🇰🇪 肯亞', code: 'ke', continent: 'africa', lon: 37.9, lat: -0.02, mainHub: false, badgeIcon: '🥩', badgeTitle: '🇰🇪 肯亞烤肉宴', badgeDesc: '短句：Fresh coffee from Kenya!', foodIntro: '豪氣炭火烤肉搭配特製辣椒沾醬。' },
+      { id: 'madagascar', name: '🇲🇬 馬達加斯加', code: 'mg', continent: 'africa', lon: 46.8, lat: -18.7, mainHub: false, badgeIcon: '🍚', badgeTitle: '🇲🇬 瘤牛佐香米飯', badgeDesc: '短句：Delicious island food!', foodIntro: '島嶼特色瘤牛肉燉蔬菜香米飯。' },
+      { id: 'south_africa', name: '🇿🇦 南非', code: 'za', continent: 'africa', lon: 22.9, lat: -30.5, mainHub: false, badgeIcon: '🌭', badgeTitle: '🇿🇦 南非農夫香腸', badgeDesc: '短句：Taste the barbecue!', foodIntro: '香料粗肉香腸炭火烤至外脆內汁。' },
 
-      // 🌎 4. 南美洲 10 國
-      { id: 'brazil', name: '🇧🇷 巴西', code: 'br', continent: 'south-america', lon: -51.9, lat: -14.2, mainHub: true, badgeIcon: '🥩', badgeTitle: '🇧🇷 桑巴巴西窯烤', badgeDesc: '長單字：barbecue, delicious, steak', foodIntro: '粗鹽炭火慢烤 Picanha 頂級牛肉。' },
-      { id: 'argentina', name: '🇦🇷 阿根廷', code: 'ar', continent: 'south-america', lon: -63.6, lat: -38.4, mainHub: false, badgeIcon: '🥩', badgeTitle: '🇦🇷 炭烤大牛排', badgeDesc: '長單字：restaurant, roasted, dinner', foodIntro: '青醬佐豪氣原塊炭烤牛排。' },
-      { id: 'chile', name: '🇨🇱 智利', code: 'cl', continent: 'south-america', lon: -71.5, lat: -35.6, mainHub: false, badgeIcon: '🥟', badgeTitle: '🇨🇱 智利牛肉烤包', badgeDesc: '長單字：chocolate, traditional, recipe', foodIntro: '包入牛肉洋蔥與橄欖的金黃烤餅包。' },
-      { id: 'peru', name: '🇵🇪 秘魯', code: 'pe', continent: 'south-america', lon: -75.0, lat: -9.1, mainHub: false, badgeIcon: '🥗', badgeTitle: '🇵🇪 檸檬生汁醃魚', badgeDesc: '長單字：pineapple, seafood, lemon', foodIntro: '檸檬汁醃製鮮魚佐紫洋蔥香菜。' },
-      { id: 'colombia', name: '🇨🇴 哥倫比亞', code: 'co', continent: 'south-america', lon: -74.2, lat: 4.5, mainHub: false, badgeIcon: '🫓', badgeTitle: '🇨🇴 哥倫比亞起司餅', badgeDesc: '長單字：breakfast, kitchen, cheese', foodIntro: '玉米餅夾入滿滿拉絲起司香煎。' },
-      { id: 'uruguay', name: '🇺🇾 烏拉圭', code: 'uy', continent: 'south-america', lon: -55.7, lat: -32.5, mainHub: false, badgeIcon: '🥪', badgeTitle: '🇺🇾 烏拉圭巨無霸堡', badgeDesc: '長單字：sandwich, hamburger, gourmet', foodIntro: '牛排火腿起司蛋多層次豪華三明治。' },
-      { id: 'bolivia', name: '🇧🇴 玻利維亞', code: 'bo', continent: 'south-america', lon: -63.5, lat: -16.2, mainHub: false, badgeIcon: '🍲', badgeTitle: '🇧🇴 高山燉肉湯', badgeDesc: '長單字：vegetable, potatoes, cooking', foodIntro: '高原蔬菜與牛肉慢燉的滋補濃湯。' },
-      { id: 'ecuador', name: '🇪🇨 厄瓜多', code: 'ec', continent: 'south-america', lon: -78.1, lat: -1.8, mainHub: false, badgeIcon: '🦐', badgeTitle: '🇪🇨 赤道鮮蝦雞尾酒', badgeDesc: '長單字：tropical, cocktail, shrimp', foodIntro: '茄汁檸檬鮮蝦涼拌熱帶小吃。' },
-      { id: 'paraguay', name: '🇵🇾 巴拉圭', code: 'py', continent: 'south-america', lon: -58.4, lat: -23.4, mainHub: false, badgeIcon: '🧀', badgeTitle: '🇵🇾 帕瑪起司麵包', badgeDesc: '長單字：bakery, homemade, cheese', foodIntro: '木薯粉與起司烘烤出的香 Q 麵包。' },
-      { id: 'venezuela', name: '🇻🇪 委內瑞拉', code: 've', continent: 'south-america', lon: -66.5, lat: 6.4, mainHub: false, badgeIcon: '🫓', badgeTitle: '🇻🇪 玉米餅夾絲肉', badgeDesc: '南美長單字大滿貫考驗！', foodIntro: '酥脆玉米餅包入手撕牛肉與黃起司。' },
-
-      // 🌍 5. 非洲與大洋洲 10 國
-      { id: 'egypt', name: '🇪🇬 埃及', code: 'eg', continent: 'africa-oceania', lon: 30.8, lat: 26.8, mainHub: true, badgeIcon: '🍲', badgeTitle: '🇪🇬 庫沙利鷹嘴豆飯', badgeDesc: '短句：Welcome to Egypt!', foodIntro: '通心粉米飯鷹嘴豆佐香辣番茄醬。' },
-      { id: 'morocco', name: '🇲🇦 摩洛哥', code: 'ma', continent: 'africa-oceania', lon: -7.0, lat: 31.7, mainHub: false, badgeIcon: '🍲', badgeTitle: '🇲🇦 塔吉鍋燉肉', badgeDesc: '短句：Enjoy your meal.', foodIntro: '陶土塔吉鍋慢火悶燉香料羊肉。' },
-      { id: 'kenya', name: '🇰🇪 肯亞', code: 'ke', continent: 'africa-oceania', lon: 37.9, lat: -0.02, mainHub: false, badgeIcon: '🥩', badgeTitle: '🇰🇪 肯亞烤肉宴', badgeDesc: '短句：Fresh coffee from Kenya!', foodIntro: '豪氣炭火烤肉搭配特製辣椒沾醬。' },
-      { id: 'south_africa', name: '🇿🇦 南非', code: 'za', continent: 'africa-oceania', lon: 22.9, lat: -30.5, mainHub: false, badgeIcon: '🌭', badgeTitle: '🇿🇦 南非農夫香腸', badgeDesc: '短句：Taste the barbecue!', foodIntro: '香料粗肉香腸炭火烤至外脆內汁。' },
-      { id: 'madagascar', name: '🇲🇬 馬達加斯加', code: 'mg', continent: 'africa-oceania', lon: 46.8, lat: -18.7, mainHub: false, badgeIcon: '🍚', badgeTitle: '🇲🇬 瘤牛佐香米飯', badgeDesc: '短句：Delicious island food!', foodIntro: '島嶼特色瘤牛肉燉蔬菜香米飯。' },
-      { id: 'australia', name: '🇦🇺 澳洲', code: 'au', continent: 'africa-oceania', lon: 133.7, lat: -25.2, mainHub: true, badgeIcon: '🥧', badgeTitle: '🇦🇺 肉汁牛肉派', badgeDesc: '長句：Australia serves hot beef pie.', foodIntro: '金黃酥皮包裹濃郁燉牛肉醬汁。' },
-      { id: 'new_zealand', name: '🇳🇿 紐西蘭', code: 'nz', continent: 'africa-oceania', lon: 174.8, lat: -40.9, mainHub: false, badgeIcon: '🍰', badgeTitle: '🇳🇿 帕洛娃蛋白霜餅', badgeDesc: '長句：New Zealand kiwi dessert is great!', foodIntro: '外酥內軟蛋白霜餅鋪滿奇異果鮮奶油。' },
-      { id: 'fiji', name: '🇫🇯 斐濟', code: 'fj', continent: 'africa-oceania', lon: 178.0, lat: -17.7, mainHub: false, badgeIcon: '🐟', badgeTitle: '🇫🇯 椰汁醃鮮魚', badgeDesc: '長句：Fresh fish with coconut milk is perfect.', foodIntro: '新鮮生魚片浸泡椰奶與檸檬汁。' },
-      { id: 'palau', name: '🇵🇼 帛琉', code: 'pw', continent: 'africa-oceania', lon: 134.5, lat: 7.5, mainHub: false, badgeIcon: '🥣', badgeTitle: '🇵🇼 椰香芋頭湯', badgeDesc: '長句：Try the sweet coconut taro soup today!', foodIntro: '濃郁椰奶慢燉熱帶芋頭濃湯。' },
-      { id: 'samoa', name: '🇼🇸 薩摩亞', code: 'ws', continent: 'africa-oceania', lon: -172.1, lat: -13.7, mainHub: false, badgeIcon: '🐷', badgeTitle: '🇼🇸 地爐烤豬肉', badgeDesc: '長句：Congratulations! You are the Typing Master!', foodIntro: '傳統地爐石頭慢火炭烤香嫩豚肉。' }
+      // 🌏 5. 大洋洲 5 國（由西北向東南順向連線）
+      { id: 'palau', name: '🇵🇼 帛琉', code: 'pw', continent: 'oceania', lon: 134.5, lat: 7.5, mainHub: true, badgeIcon: '🥣', badgeTitle: '🇵🇼 椰香芋頭湯', badgeDesc: '長句：Try the sweet coconut taro soup today!', foodIntro: '濃郁椰奶慢燉熱帶芋頭濃湯。' },
+      { id: 'australia', name: '🇦🇺 澳洲', code: 'au', continent: 'oceania', lon: 133.7, lat: -25.2, mainHub: false, badgeIcon: '🥧', badgeTitle: '🇦🇺 肉汁牛肉派', badgeDesc: '長句：Australia serves hot beef pie.', foodIntro: '金黃酥皮包裹濃郁燉牛肉醬汁。' },
+      { id: 'fiji', name: '🇫🇯 斐濟', code: 'fj', continent: 'oceania', lon: 178.0, lat: -17.7, mainHub: false, badgeIcon: '🐟', badgeTitle: '🇫🇯 椰汁醃鮮魚', badgeDesc: '長句：Fresh fish with coconut milk is perfect.', foodIntro: '新鮮生魚片浸泡椰奶與檸檬汁。' },
+      { id: 'samoa', name: '🇼🇸 薩摩亞', code: 'ws', continent: 'oceania', lon: 176.5, lat: -13.7, mainHub: false, badgeIcon: '🐷', badgeTitle: '🇼🇸 地爐烤豬肉', badgeDesc: '長句：Congratulations! You are the Typing Master!', foodIntro: '傳統地爐石頭慢火炭烤香嫩豚肉。' },
+      { id: 'new_zealand', name: '🇳🇿 紐西蘭', code: 'nz', continent: 'oceania', lon: 174.8, lat: -40.9, mainHub: false, badgeIcon: '🍰', badgeTitle: '🇳🇿 帕洛娃蛋白霜餅', badgeDesc: '長句：New Zealand kiwi dessert is great!', foodIntro: '外酥內軟蛋白霜餅鋪滿奇異果鮮奶油。' }
     ];
 
     const continentViews = {
-      'world': { center: [0, 20], zoom: 1 },
-      'asia': { center: [105, 22], zoom: 2.3 },
-      'europe': { center: [10, 50], zoom: 3.4 },
-      'north-america': { center: [-98, 38], zoom: 2.5 },
-      'south-america': { center: [-60, -22], zoom: 2.3 },
-      'africa-oceania': { center: [80, -10], zoom: 1.8 }
+      'world': { center: [15, 12], zoom: 1.0 },
+      'asia': { center: [105, 30], zoom: 1.95 },
+      'europe': { center: [18, 51], zoom: 2.6 },
+      'americas': { center: [-98, 35], zoom: 1.85 },
+      'americas_north': { center: [-98, 35], zoom: 1.85 },
+      'americas_south': { center: [-63, -19], zoom: 1.75 },
+      'africa': { center: [16, -6], zoom: 1.75 },
+      'oceania': { center: [148, -17], zoom: 1.65 }
     };
-
     /* 專屬題庫 */
     const countryQuestions = {
       taiwan: {
@@ -1065,89 +1105,231 @@
         perfect: [{ target: "Z1x!C2v; B3n,M4. A5sD6f", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
       },
 
-      // 🌎 美洲、非洲、大洋洲題庫
-      usa: {
-        stage1: [{ target: "burger cheese beef", zh: "漢堡食材基礎單字練習", icon: "🍔" }],
-        stage2: [{ target: "fresh burger cheese beef", zh: "雙層牛肉漢堡單字連打", icon: "🍔" }],
-        stage3: [{ target: "beef burger with cheese", zh: "多汁牛肉漢堡美味出餐", icon: "🍔" }],
-        speed: [{ target: "burger burger cheese", zh: "🔥 美式漢堡極速單字", icon: "⚡" }],
-        perfect: [{ target: "burger cheese beef", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
-      },
+// ================= 🍁 北美洲 8 國（基礎單字，每國獨立題目） =================
       canada: {
-        stage1: [{ target: "fries gravy maple", zh: "加拿大美食基礎單字", icon: "🍟" }],
-        stage2: [{ target: "hot fries with gravy", zh: "熱騰騰肉汁薯條單字", icon: "🍟" }],
-        stage3: [{ target: "tasty fries and gravy", zh: "普丁肉汁薯條香氣四溢", icon: "🍟" }],
-        speed: [{ target: "fries fries gravy", zh: "🔥 薯條極速單字連打", icon: "⚡" }],
+        stage1: [{ target: "fries gravy maple", zh: "加拿大普丁薯條基礎單字", icon: "🍟" }],
+        stage2: [{ target: "hot fries with gravy", zh: "淋上濃郁肉汁與起司塊", icon: "🍟" }],
+        stage3: [{ target: "sweet maple syrup fries", zh: "楓糖與肉汁薯條完美出餐", icon: "🍟" }],
+        speed: [{ target: "fries gravy maple", zh: "🔥 薯條極速單字連打", icon: "⚡" }],
         perfect: [{ target: "fries gravy maple", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      usa: {
+        stage1: [{ target: "burger cheese beef", zh: "美式漢堡基礎單字", icon: "🍔" }],
+        stage2: [{ target: "fresh beef burger cheese", zh: "雙層牛肉起司漢堡連打", icon: "🍔" }],
+        stage3: [{ target: "juicy burger with bacon", zh: "美式經典雙層漢堡出餐", icon: "🍔" }],
+        speed: [{ target: "burger cheese beef", zh: "🔥 美式漢堡極速單字", icon: "⚡" }],
+        perfect: [{ target: "burger cheese beef", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
       },
       mexico: {
         stage1: [{ target: "taco salsa corn", zh: "墨西哥塔可基礎單字", icon: "🌮" }],
         stage2: [{ target: "spicy taco with salsa", zh: "香辣莎莎醬塔可單字", icon: "🌮" }],
-        stage3: [{ target: "fresh corn taco salsa", zh: "美味墨西哥塔可出餐", icon: "🌮" }],
-        speed: [{ target: "taco taco salsa", zh: "🔥 塔可極速單字連打", icon: "⚡" }],
+        stage3: [{ target: "fresh lime corn taco", zh: "道地墨西哥塔可出餐", icon: "🌮" }],
+        speed: [{ target: "taco salsa corn", zh: "🔥 塔可極速單字連打", icon: "⚡" }],
         perfect: [{ target: "taco salsa corn", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
       },
+      belize: {
+        stage1: [{ target: "pie meat oven", zh: "貝里斯肉派基礎單字", icon: "🥧" }],
+        stage2: [{ target: "baked meat pie crust", zh: "金黃酥脆燉肉派單字", icon: "🥧" }],
+        stage3: [{ target: "warm spicy meat pie", zh: "貝里斯國民肉派小吃出餐", icon: "🥧" }],
+        speed: [{ target: "pie meat oven", zh: "🔥 肉派極速單字連打", icon: "⚡" }],
+        perfect: [{ target: "pie meat oven", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      costa_rica: {
+        stage1: [{ target: "rice beans fruit", zh: "哥斯達黎加黑豆飯單字", icon: "🍛" }],
+        stage2: [{ target: "black beans and rice", zh: "經典香料黑豆炒飯單字", icon: "🍛" }],
+        stage3: [{ target: "sweet mango rice bowl", zh: "營養滿分黑豆香米飯出餐", icon: "🍛" }],
+        speed: [{ target: "rice beans fruit", zh: "🔥 黑豆飯極速單字連打", icon: "⚡" }],
+        perfect: [{ target: "rice beans fruit", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      panama: {
+        stage1: [{ target: "soup fish fresh", zh: "巴拿馬海鮮湯基礎單字", icon: "🍲" }],
+        stage2: [{ target: "fresh fish seafood soup", zh: "運河新鮮海產熬煮濃湯", icon: "🍲" }],
+        stage3: [{ target: "hot shrimp fish stew", zh: "巴拿馬海鮮大燴湯出餐", icon: "🍲" }],
+        speed: [{ target: "soup fish fresh", zh: "🔥 海鮮湯極速單字連打", icon: "⚡" }],
+        perfect: [{ target: "soup fish fresh", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      cuba: {
+        stage1: [{ target: "pork bread toast", zh: "古巴三明治基礎單字", icon: "🥪" }],
+        stage2: [{ target: "roast pork ham toast", zh: "酸黃瓜起司烤豬肉單字", icon: "🥪" }],
+        stage3: [{ target: "crispy cuban pork bread", zh: "哈瓦那熱壓三明治出餐", icon: "🥪" }],
+        speed: [{ target: "pork bread toast", zh: "🔥 三明治極速單字連打", icon: "⚡" }],
+        perfect: [{ target: "pork bread toast", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      dominican: {
+        stage1: [{ target: "sweet garlic mash", zh: "多明尼加蒜香芭蕉單字", icon: "🍌" }],
+        stage2: [{ target: "fried plantain garlic mash", zh: "炸芭蕉搗泥佐蒜香醬", icon: "🍌" }],
+        stage3: [{ target: "crispy bacon garlic mash", zh: "多明尼加蒜香芭蕉泥出餐", icon: "🍌" }],
+        speed: [{ target: "sweet garlic mash", zh: "🔥 芭蕉泥極速單字連打", icon: "⚡" }],
+        perfect: [{ target: "sweet garlic mash", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+
+      // ================= 🦙 南美洲 12 國（進階長單字，每國獨立題目） =================
+      colombia: {
+        stage1: [{ target: "breakfast kitchen cheese", zh: "哥倫比亞起司餅長單字", icon: "🫓" }],
+        stage2: [{ target: "delicious mozzarella cornmeal", zh: "拉絲起司玉米餅長單字", icon: "🫓" }],
+        stage3: [{ target: "colombian breakfast cheese", zh: "哥倫比亞香煎起司餅出餐", icon: "🫓" }],
+        speed: [{ target: "breakfast kitchen cheese", zh: "🔥 起司餅極速長單字", icon: "⚡" }],
+        perfect: [{ target: "breakfast kitchen cheese", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      venezuela: {
+        stage1: [{ target: "shredded avocado sandwich", zh: "委內瑞拉玉米餅長單字", icon: "🫓" }],
+        stage2: [{ target: "venezuelan cornbread platter", zh: "手撕牛肉與酪梨長單字", icon: "🫓" }],
+        stage3: [{ target: "delicious shredded beef", zh: "委內瑞拉玉米餅夾絲肉出餐", icon: "🫓" }],
+        speed: [{ target: "shredded avocado sandwich", zh: "🔥 玉米餅極速長單字", icon: "⚡" }],
+        perfect: [{ target: "shredded avocado sandwich", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      guyana: {
+        stage1: [{ target: "tropical cinnamon pepper", zh: "蓋亞那胡椒燉肉長單字", icon: "🥘" }],
+        stage2: [{ target: "caribbean seasoning stew", zh: "加勒比香料燉肉長單字", icon: "🥘" }],
+        stage3: [{ target: "traditional cinnamon pepper", zh: "蓋亞那節慶胡椒燉肉出餐", icon: "🥘" }],
+        speed: [{ target: "tropical cinnamon pepper", zh: "🔥 燉肉極速長單字", icon: "⚡" }],
+        perfect: [{ target: "tropical cinnamon pepper", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      suriname: {
+        stage1: [{ target: "peanut plantain delicious", zh: "蘇利南花生芭蕉湯長單字", icon: "🍜" }],
+        stage2: [{ target: "aromatic peanut dumpling", zh: "濃郁花生醬香料長單字", icon: "🍜" }],
+        stage3: [{ target: "delicious plantain soup", zh: "蘇利南花生醬芭蕉湯出餐", icon: "🍜" }],
+        speed: [{ target: "peanut plantain delicious", zh: "🔥 花生湯極速長單字", icon: "⚡" }],
+        perfect: [{ target: "peanut plantain delicious", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      ecuador: {
+        stage1: [{ target: "tropical cocktail shrimp", zh: "厄瓜多鮮蝦雞尾酒長單字", icon: "🦐" }],
+        stage2: [{ target: "refreshing citrus marinade", zh: "茄汁檸檬鮮蝦涼拌長單字", icon: "🦐" }],
+        stage3: [{ target: "ecuadorian shrimp cocktail", zh: "赤道鮮蝦雞尾酒出餐", icon: "🦐" }],
+        speed: [{ target: "tropical cocktail shrimp", zh: "🔥 鮮蝦杯極速長單字", icon: "⚡" }],
+        perfect: [{ target: "tropical cocktail shrimp", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      peru: {
+        stage1: [{ target: "pineapple seafood lemon", zh: "秘魯檸檬醃生魚長單字", icon: "🥗" }],
+        stage2: [{ target: "peruvian ceviche coriander", zh: "檸檬汁醃製鮮魚佐紫洋蔥", icon: "🥗" }],
+        stage3: [{ target: "refreshing seafood lemon", zh: "秘魯經典檸檬生汁醃魚出餐", icon: "🥗" }],
+        speed: [{ target: "pineapple seafood lemon", zh: "🔥 醃生魚極速長單字", icon: "⚡" }],
+        perfect: [{ target: "pineapple seafood lemon", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      bolivia: {
+        stage1: [{ target: "vegetable potatoes cooking", zh: "玻利維亞高山燉肉長單字", icon: "🍲" }],
+        stage2: [{ target: "bolivian highland casserole", zh: "高原馬鈴薯牛肉慢燉長單字", icon: "🍲" }],
+        stage3: [{ target: "nourishing vegetable stew", zh: "玻利維亞高山燉肉湯出餐", icon: "🍲" }],
+        speed: [{ target: "vegetable potatoes cooking", zh: "🔥 高山湯極速長單字", icon: "⚡" }],
+        perfect: [{ target: "vegetable potatoes cooking", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
       brazil: {
-        stage1: [{ target: "barbecue delicious steak", zh: "巴西窯烤長單字練習", icon: "🥩" }],
-        stage2: [{ target: "traditional brazilian barbecue", zh: "經典巴西窯烤長單字", icon: "🥩" }],
-        stage3: [{ target: "delicious roasted beef steak", zh: "炭火慢烤 Picanha 出餐", icon: "🥩" }],
-        speed: [{ target: "barbecue barbecue steak", zh: "🔥 窯烤極速長單字", icon: "⚡" }],
+        stage1: [{ target: "barbecue delicious steak", zh: "巴西窯烤牛排長單字", icon: "🥩" }],
+        stage2: [{ target: "traditional brazilian barbecue", zh: "粗鹽炭火慢烤頂級牛肉", icon: "🥩" }],
+        stage3: [{ target: "delicious roasted picanha", zh: "桑巴巴西窯烤盛宴出餐", icon: "🥩" }],
+        speed: [{ target: "barbecue delicious steak", zh: "🔥 巴西窯烤極速長單字", icon: "⚡" }],
         perfect: [{ target: "barbecue delicious steak", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
       },
+      paraguay: {
+        stage1: [{ target: "bakery homemade cheese", zh: "巴拉圭起司麵包長單字", icon: "🧀" }],
+        stage2: [{ target: "paraguayan cassava pastry", zh: "木薯粉烘烤香Q起司麵包", icon: "🧀" }],
+        stage3: [{ target: "homemade warm cheese", zh: "巴拉圭帕瑪起司麵包出餐", icon: "🧀" }],
+        speed: [{ target: "bakery homemade cheese", zh: "🔥 起司包極速長單字", icon: "⚡" }],
+        perfect: [{ target: "bakery homemade cheese", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      uruguay: {
+        stage1: [{ target: "sandwich hamburger gourmet", zh: "烏拉圭巨無霸堡長單字", icon: "🥪" }],
+        stage2: [{ target: "uruguayan steakhouse platter", zh: "牛排火腿起司多層次三明治", icon: "🥪" }],
+        stage3: [{ target: "gourmet chivito sandwich", zh: "烏拉圭巨無霸豪華堡出餐", icon: "🥪" }],
+        speed: [{ target: "sandwich hamburger gourmet", zh: "🔥 巨無霸堡極速長單字", icon: "⚡" }],
+        perfect: [{ target: "sandwich hamburger gourmet", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      chile: {
+        stage1: [{ target: "chocolate traditional recipe", zh: "智利牛肉烤包長單字", icon: "🥟" }],
+        stage2: [{ target: "chilean empanada pastry", zh: "牛肉洋蔥橄欖金黃烤餅包", icon: "🥟" }],
+        stage3: [{ target: "traditional baked recipe", zh: "智利經典牛肉烤包出餐", icon: "🥟" }],
+        speed: [{ target: "chocolate traditional recipe", zh: "🔥 牛肉烤包極速長單字", icon: "⚡" }],
+        perfect: [{ target: "chocolate traditional recipe", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
       argentina: {
-        stage1: [{ target: "restaurant roasted dinner", zh: "阿根廷牛排長單字練習", icon: "🥩" }],
-        stage2: [{ target: "delicious roasted beef dinner", zh: "炭烤原塊牛排長單字", icon: "🥩" }],
-        stage3: [{ target: "argentina restaurant steak", zh: "青醬豪氣牛排套餐出餐", icon: "🥩" }],
-        speed: [{ target: "restaurant roasted steak", zh: "🔥 牛排極速長單字", icon: "⚡" }],
+        stage1: [{ target: "restaurant roasted dinner", zh: "阿根廷炭烤牛排長單字", icon: "🥩" }],
+        stage2: [{ target: "argentinian chimichurri steak", zh: "青醬佐豪氣原塊炭烤牛排", icon: "🥩" }],
+        stage3: [{ target: "delicious roasted dinner", zh: "阿根廷頂級炭烤大牛排出餐", icon: "🥩" }],
+        speed: [{ target: "restaurant roasted dinner", zh: "🔥 阿根廷牛排極速長單字", icon: "⚡" }],
         perfect: [{ target: "restaurant roasted dinner", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
       },
+
+      // ================= 🌍 非洲 5 國（實用短句，每國獨立題目） =================
+      senegal: {
+        stage1: [{ target: "Enjoy your meal!", zh: "塞內加爾魚香飯短句練習", icon: "🍛" }],
+        stage2: [{ target: "Taste the spiced fish!", zh: "西非番茄香料燉鮮魚短句", icon: "🍛" }],
+        stage3: [{ target: "Welcome to Dakar!", zh: "塞內加爾魚香飯盛宴出餐", icon: "🍛" }],
+        speed: [{ target: "Enjoy your meal!", zh: "🔥 魚香飯短句極速連打", icon: "⚡" }],
+        perfect: [{ target: "Enjoy your meal!", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      morocco: {
+        stage1: [{ target: "Hot tagine is ready!", zh: "摩洛哥塔吉鍋短句練習", icon: "🍲" }],
+        stage2: [{ target: "Smell the sweet spices!", zh: "陶土塔吉鍋慢火悶燉羊肉", icon: "🍲" }],
+        stage3: [{ target: "Mint tea is very good!", zh: "摩洛哥塔吉鍋燉肉出餐", icon: "🍲" }],
+        speed: [{ target: "Hot tagine is ready!", zh: "🔥 塔吉鍋短句極速連打", icon: "⚡" }],
+        perfect: [{ target: "Hot tagine is ready!", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
       egypt: {
-        stage1: [{ target: "Welcome to Egypt!", zh: "埃及短句練習", icon: "🍲" }],
-        stage2: [{ target: "Try the Egyptian food!", zh: "庫沙利鷹嘴豆飯短句", icon: "🍲" }],
-        stage3: [{ target: "Welcome to Egypt and enjoy!", zh: "埃及美食盛宴短句出餐", icon: "🍲" }],
-        speed: [{ target: "Welcome Welcome Egypt", zh: "🔥 短句極速連打", icon: "⚡" }],
+        stage1: [{ target: "Welcome to Egypt!", zh: "埃及庫沙利短句練習", icon: "🍲" }],
+        stage2: [{ target: "Try the spicy sauce!", zh: "庫沙利鷹嘴豆飯短句", icon: "🍲" }],
+        stage3: [{ target: "Cairo food is great!", zh: "埃及美食盛宴短句出餐", icon: "🍲" }],
+        speed: [{ target: "Welcome to Egypt!", zh: "🔥 埃及短句極速連打", icon: "⚡" }],
         perfect: [{ target: "Welcome to Egypt!", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
       },
+      kenya: {
+        stage1: [{ target: "Fresh coffee is hot!", zh: "肯亞烤肉咖啡短句練習", icon: "🥩" }],
+        stage2: [{ target: "Try Kenyan roast meat!", zh: "豪氣炭火烤肉配辣椒醬", icon: "🥩" }],
+        stage3: [{ target: "Safari dinner is fun!", zh: "肯亞炭火烤肉宴出餐", icon: "🥩" }],
+        speed: [{ target: "Fresh coffee is hot!", zh: "🔥 肯亞短句極速連打", icon: "⚡" }],
+        perfect: [{ target: "Fresh coffee is hot!", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      madagascar: {
+        stage1: [{ target: "Sweet vanilla island!", zh: "馬達加斯加香米飯短句", icon: "🍚" }],
+        stage2: [{ target: "Taste the island beef!", zh: "島嶼特色瘤牛肉燉香米飯", icon: "🍚" }],
+        stage3: [{ target: "Warm rice smells nice!", zh: "馬達加斯加瘤牛飯出餐", icon: "🍚" }],
+        speed: [{ target: "Sweet vanilla island!", zh: "🔥 島嶼短句極速連打", icon: "⚡" }],
+        perfect: [{ target: "Sweet vanilla island!", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      south_africa: {
+        stage1: [{ target: "Taste the barbecue!", zh: "南非農夫香腸短句練習", icon: "🌭" }],
+        stage2: [{ target: "Grill the spicy sausage!", zh: "香料粗肉香腸炭火烤至外脆", icon: "🌭" }],
+        stage3: [{ target: "Cape Town feast begins!", zh: "南非農夫香腸盛宴出餐", icon: "🌭" }],
+        speed: [{ target: "Taste the barbecue!", zh: "🔥 南非短句極速連打", icon: "⚡" }],
+        perfect: [{ target: "Taste the barbecue!", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+
+      // ================= 🌏 大洋洲 5 國（經典長句，每國獨立題目） =================
+      palau: {
+        stage1: [{ target: "Try the sweet coconut taro soup today!", zh: "帛琉椰香芋頭湯長句練習", icon: "🥣" }],
+        stage2: [{ target: "Palau serves warm taro soup with rich coconut milk!", zh: "濃郁椰奶慢燉熱帶芋頭濃湯", icon: "🥣" }],
+        stage3: [{ target: "Enjoy this tropical island soup by the blue ocean!", zh: "帛琉椰香芋頭湯盛宴出餐", icon: "🥣" }],
+        speed: [{ target: "Try the sweet coconut taro soup today!", zh: "🔥 帛琉長句極速連打", icon: "⚡" }],
+        perfect: [{ target: "Try the sweet coconut taro soup today!", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
       australia: {
-        stage1: [{ target: "Australia serves hot beef pie.", zh: "澳洲牛肉派英文長句", icon: "🥧" }],
-        stage2: [{ target: "Enjoy the delicious australian beef pie today!", zh: "金黃酥皮牛肉派長句", icon: "🥧" }],
-        stage3: [{ target: "Welcome to Australia and try the best pie ever!", zh: "澳洲傳統牛肉派終極長句", icon: "🥧" }],
-        speed: [{ target: "Australia Australia beef pie", zh: "🔥 長句極速連打", icon: "⚡" }],
+        stage1: [{ target: "Australia serves hot beef pie.", zh: "澳洲肉汁牛肉派長句練習", icon: "🥧" }],
+        stage2: [{ target: "Enjoy the delicious australian beef pie today!", zh: "金黃酥皮包裹濃郁燉牛肉醬汁", icon: "🥧" }],
+        stage3: [{ target: "Welcome to Sydney and try the best meat pie ever!", zh: "澳洲傳統牛肉派終極長句", icon: "🥧" }],
+        speed: [{ target: "Australia serves hot beef pie.", zh: "🔥 澳洲長句極速連打", icon: "⚡" }],
         perfect: [{ target: "Australia serves hot beef pie.", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      fiji: {
+        stage1: [{ target: "Fresh fish with coconut milk is perfect.", zh: "斐濟椰汁醃鮮魚長句練習", icon: "🐟" }],
+        stage2: [{ target: "Fiji cooks fresh ocean fish with lime and coconut!", zh: "新鮮生魚片浸泡椰奶與檸檬汁", icon: "🐟" }],
+        stage3: [{ target: "Taste the refreshing island seafood dish in Fiji!", zh: "斐濟椰汁醃鮮魚盛宴出餐", icon: "🐟" }],
+        speed: [{ target: "Fresh fish with coconut milk is perfect.", zh: "🔥 斐濟長句極速連打", icon: "⚡" }],
+        perfect: [{ target: "Fresh fish with coconut milk is perfect.", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      samoa: {
+        stage1: [{ target: "Congratulations! You are the Typing Master!", zh: "薩摩亞地爐烤豬肉長句練習", icon: "🐷" }],
+        stage2: [{ target: "Samoa roasts tender pork over hot volcanic stones!", zh: "傳統地爐石頭慢火炭烤香嫩豚肉", icon: "🐷" }],
+        stage3: [{ target: "Celebrate your typing journey with a Samoan feast!", zh: "薩摩亞地爐烤豬肉盛宴出餐", icon: "🐷" }],
+        speed: [{ target: "Congratulations! You are the Typing Master!", zh: "🔥 薩摩亞長句極速連打", icon: "⚡" }],
+        perfect: [{ target: "Congratulations! You are the Typing Master!", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
+      },
+      new_zealand: {
+        stage1: [{ target: "New Zealand kiwi dessert is great!", zh: "紐西蘭帕洛娃蛋白霜餅長句", icon: "🍰" }],
+        stage2: [{ target: "Sweet pavlova cake topped with fresh green kiwi!", zh: "外酥內軟蛋白霜餅鋪滿奇異果奶油", icon: "🍰" }],
+        stage3: [{ target: "You have completed the global food typing adventure!", zh: "環球美食盲打終極大滿貫出餐", icon: "🍰" }],
+        speed: [{ target: "New Zealand kiwi dessert is great!", zh: "🔥 紐西蘭長句極速連打", icon: "⚡" }],
+        perfect: [{ target: "New Zealand kiwi dessert is great!", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
       }
-    };
-
-    worldData.forEach(c => {
-      if (!countryQuestions[c.id]) {
-        if (c.continent === 'north-america') {
-          countryQuestions[c.id] = {
-            stage1: [{ target: "food cook fresh chef", zh: `${c.name} 美食基礎單字`, icon: c.badgeIcon }],
-            stage2: [{ target: "tasty food fresh dinner", zh: `${c.name} 美味料理單字`, icon: c.badgeIcon }],
-            stage3: [{ target: "fresh food from the chef", zh: `${c.name} 特色料理出餐`, icon: c.badgeIcon }],
-            speed: [{ target: "food food fresh fresh", zh: "🔥 極速單字連打", icon: "⚡" }],
-            perfect: [{ target: "food cook fresh chef", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
-          };
-        } else if (c.continent === 'south-america') {
-          countryQuestions[c.id] = {
-            stage1: [{ target: "delicious kitchen restaurant", zh: `${c.name} 美食長單字`, icon: c.badgeIcon }],
-            stage2: [{ target: "traditional cooking recipe", zh: `${c.name} 傳統料理長單字`, icon: c.badgeIcon }],
-            stage3: [{ target: "delicious food from kitchen", zh: `${c.name} 南美盛宴出餐`, icon: c.badgeIcon }],
-            speed: [{ target: "kitchen restaurant cooking", zh: "🔥 極速長單字連打", icon: "⚡" }],
-            perfect: [{ target: "delicious kitchen restaurant", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
-          };
-        } else {
-          countryQuestions[c.id] = {
-            stage1: [{ target: "Enjoy your food today!", zh: `${c.name} 實用短句練習`, icon: c.badgeIcon }],
-            stage2: [{ target: "Welcome to our local restaurant!", zh: `${c.name} 經典長句練習`, icon: c.badgeIcon }],
-            stage3: [{ target: "Try the best local food with us today!", zh: `${c.name} 終極長句盛宴`, icon: c.badgeIcon }],
-            speed: [{ target: "Welcome Welcome Enjoy food", zh: "🔥 句子極速連打", icon: "⚡" }],
-            perfect: [{ target: "Enjoy your food today!", zh: "💣 0 錯字防炸彈考驗", icon: "🎯" }]
-          };
-        }
-      }
-    });
-
-    // 🏆 10 個抽象好笑 + 諧音梗成就徽章
+    };    // 🏆 10 個抽象好笑 + 諧音梗成就徽章
     const badgesData = [
       { id: 'badge_smoke', name: '⌨️ 鍵盤冒煙俠', icon: '⌨️', desc: '單局 WPM 突破 55（鍵盤軸體正在申請職災賠償）', unlocked: false },
       { id: 'badge_single20', name: '💨 單身二十年的手速', icon: '💨', desc: '在「美食暴走 Fever」剩餘超過 5 秒的情況下通關', unlocked: false },
@@ -1168,6 +1350,7 @@
     let currentSelectedCountry = worldData[0];
     let currentModeKey = 'stage1';
     let currentContinentKey = 'world';
+    let americasSubRegion = 'north'; // 'north' (北美洲) | 'south' (南美洲)
     let currentList = [];
     let currentIndex = 0;
     let timerInterval = null;
@@ -1417,9 +1600,38 @@
         g.selectAll("path").data(countries.features).enter().append("path").attr("class", "country-shape").attr("d", pathGenerator);
         renderCountryPins();
       });
-    }
+      // 美洲地圖滑鼠滾輪上下滾動查看（綁定一次，嚴格同步地圖與國家標誌座標，並完整支援滑到南美洲最南端）
+      if (!container.dataset.wheelBound) {
+        container.dataset.wheelBound = 'true';
+        container.addEventListener('wheel', (e) => {
+          if (currentContinentKey !== 'americas') return;
+          e.preventDefault();
 
-    // 計算某大洲獲得的副本星數（speed + perfect）
+          // 立即停止尚未結束的切換動畫，確保地圖 <g> 與圖標座標 100% 同步不飄移
+          g.interrupt();
+          flightG.interrupt();
+          if (window.activeMapTimer) {
+            window.activeMapTimer.stop();
+            window.activeMapTimer = null;
+          }
+
+          const curH = container.clientHeight;
+          const northEdgeY = projection([-95, 72])[1];
+          // 延伸到南緯 -68 度並預留 180px 底部空間，確保阿根廷(-38.4)與智利(-35.6)都能輕鬆滑到畫面中央
+          const southEdgeY = projection([-68, -68])[1];
+
+          const maxTy = 90 - northEdgeY * currentK;
+          const minTy = (curH - 180) - southEdgeY * currentK;
+
+          currentTy = Math.max(minTy, Math.min(maxTy, currentTy - e.deltaY * 1.2));
+
+          g.attr("transform", `translate(${currentTx},${currentTy}) scale(${currentK})`);
+          flightG.attr("transform", `translate(${currentTx},${currentTy}) scale(${currentK})`);
+          updatePinPositions(currentTx, currentTy, currentK);
+        }, { passive: false });
+      }
+    }    
+// 計算某大洲獲得的副本星數（speed + perfect）
     function getContinentBonusStars(continentKey) {
       let stars = 0;
       worldData.filter(c => c.continent === continentKey).forEach(c => {
@@ -1440,15 +1652,36 @@
       return stars;
     }
 
+    const continentChineseNames = {
+      asia: '亞洲',
+      europe: '歐洲',
+      americas: '美洲',
+      africa: '非洲',
+      oceania: '大洋洲'
+    };
+
+    // 統一檢查跨洲副本星門檻：需在當前大洲收集至少 3 顆副本星才能前往下一洲
+    function checkCrossContinentGate(fromContinent, toContinent) {
+      if (!fromContinent || fromContinent === toContinent) return { allowed: true };
+      const requiredStars = 3;
+      const currentStars = getContinentBonusStars(fromContinent);
+      if (currentStars < requiredStars) {
+        return {
+          allowed: false,
+          fromName: continentChineseNames[fromContinent] || fromContinent,
+          toName: continentChineseNames[toContinent] || toContinent,
+          currentStars,
+          requiredStars
+        };
+      }
+      return { allowed: true };
+    }
     // 飛機圖示隨開航國家數量進化
     function getEvolvedPlaneEmoji() {
-      const clearedCount = worldData.filter(x => {
-        const p = userProgress[x.id] || {};
-        return p.stage1 && p.stage2 && p.stage3;
-      }).length;
-      if (clearedCount >= 40) return '🛸';
-      if (clearedCount >= 25) return '🚀';
-      if (clearedCount >= 10) return '✈️';
+      const stars = getTotalBonusStars();
+      if (stars >= 15) return '🛫';
+      if (stars >= 8) return '✈️';
+      if (stars >= 3) return '✈️';
       return '🛩️';
     }
 
@@ -1469,7 +1702,9 @@
             const dy = p2[1] - p1[1];
             const dist = Math.sqrt(dx * dx + dy * dy);
             const dr = dist * 1.5;
-            const pathD = `M ${p1[0]} ${p1[1]} A ${dr} ${dr} 0 0 1 ${p2[0]} ${p2[1]}`;
+            // 往南半球飛（如美洲➔非洲、非洲➔大洋洲）改用 sweepFlag=0 向下彎曲，與上方歐美航線完全拉開區別
+            const sweepFlag = (c2.continent === 'africa' || c2.continent === 'oceania') ? 0 : 1;
+            const pathD = `M ${p1[0]} ${p1[1]} A ${dr} ${dr} 0 0 ${sweepFlag} ${p2[0]} ${p2[1]}`;
 
             flightG.append("path")
               .attr("d", pathD)
@@ -1533,9 +1768,15 @@
       const currentPlaneIcon = getEvolvedPlaneEmoji();
 
       worldData.forEach((c, idx) => {
-        const isVisibleInCurrentView = (currentContinentKey === 'world')
-          ? (c.mainHub || (c.id === 'uae' && (userProgress['uae']?.stage3)))
-          : (c.continent === currentContinentKey);
+        let isVisibleInCurrentView = false;
+        if (currentContinentKey === 'world') {
+          isVisibleInCurrentView = (c.mainHub || (c.id === 'uae' && (userProgress['uae']?.stage3)));
+        } else if (currentContinentKey === 'americas') {
+          const targetWordType = (americasSubRegion === 'north') ? 'short' : 'long';
+          isVisibleInCurrentView = (c.continent === 'americas' && c.wordType === targetWordType);
+        } else {
+          isVisibleInCurrentView = (c.continent === currentContinentKey);
+        }
 
         if (!isVisibleInCurrentView) return;
 
@@ -1578,16 +1819,16 @@
           e.preventDefault();
           e.stopPropagation();
 
-          // 洲際海關檢查：進入歐洲前需在亞洲取得至少 3 顆副本星
-          if (isPlayable && !mainCleared && c.continent === 'europe') {
-            const asiaStars = getContinentBonusStars('asia');
-            if (asiaStars < 3) {
-              alert(`🛂 【歐洲海關通行證不足】\n\n進入歐洲全鍵盤隨機航線前，需在「亞洲」累積至少 3 顆副本星（目前：${asiaStars} / 3 ⭐）！\n\n💡 請先切換到【亞洲】，挑任意國家挑戰「🔥 美食暴走」或「💣 廚房炸彈」收集星星吧！`);
-              focusContinent('asia');
+          // 洲際海關檢查：進入新大洲第一站前，需在上一洲累積至少 3 顆副本星
+          if (isPlayable && !mainCleared && idx > 0) {
+            const prevCountry = worldData[idx - 1];
+            const gate = checkCrossContinentGate(prevCountry.continent, c.continent);
+            if (!gate.allowed) {
+              alert(`🛂 【${gate.toName}海關通行證不足】\n\n進入「${gate.toName}」航線前，需先在「${gate.fromName}」累積至少 ${gate.requiredStars} 顆副本星（目前：${gate.currentStars} / ${gate.requiredStars} ⭐）！\n\n💡 請留在【${gate.fromName}】，挑任意國家挑戰「🔥 美食暴走」或「💣 廚房炸彈」收集星星吧！`);
+              focusContinent(prevCountry.continent);
               return;
             }
           }
-          
           if (isPlayable) {
             openLevelModal(c);
           } else if (currentContinentKey === 'world') {
@@ -1597,13 +1838,35 @@
           }
         });
 
-        pinLayer.appendChild(pin);
+pinLayer.appendChild(pin);
       });
 
-      renderFlightRoutes();
-      updatePinPositions(currentTx, currentTy, currentK);
+      // 保底顯示飛機：若目前畫面沒有「尚未通關的進行中國家」，就把飛機停在目前視野中最後一個已解鎖國家上
+      if (!document.querySelector('.plane-badge')) {
+        const visibleUnlocked = worldData.filter((c, i) => {
+          const p = userProgress[c.id] || {};
+          const prevC = i > 0 ? worldData[i - 1] : null;
+          const prevP = prevC ? (userProgress[prevC.id] || {}) : { stage1: true, stage2: true, stage3: true };
+          const unlocked = (i === 0) || (prevP.stage1 && prevP.stage2 && prevP.stage3) || p.stage1 || p.stage2 || p.stage3;
+          if (!unlocked) return false;
+          if (currentContinentKey === 'world') return c.mainHub;
+          if (currentContinentKey === 'americas') {
+            return c.continent === 'americas' && c.wordType === (americasSubRegion === 'north' ? 'short' : 'long');
+          }
+          return c.continent === currentContinentKey;
+        });
+        const fallbackCountry = visibleUnlocked[visibleUnlocked.length - 1] || worldData[0];
+        const fallbackPin = document.getElementById(`pin-${fallbackCountry.id}`);
+        if (fallbackPin) {
+          const planeBadge = document.createElement('div');
+          planeBadge.className = 'plane-badge';
+          planeBadge.innerText = currentPlaneIcon;
+          fallbackPin.prepend(planeBadge);
+        }
+      }
 
-      if (activeUncompletedIndex !== -1) {
+      renderFlightRoutes();
+      updatePinPositions(currentTx, currentTy, currentK);if (activeUncompletedIndex !== -1) {
         const targetC = worldData[activeUncompletedIndex];
         const prog = userProgress[targetC.id] || {};
         if (!prog.stage1) {
@@ -1617,6 +1880,7 @@
         updatePilotGuide("恭喜您！全球 50 國美食盲打航線已全數完美通關！您是頂級盲打廚神大師！");
       }
 
+      updateAmericasSubBarUI();
       updateHeaderStats();
     }
 
@@ -1636,6 +1900,46 @@
       });
     }
 
+    function isNorthAmericaCleared() {
+      const northCountries = worldData.filter(c => c.continent === 'americas' && c.wordType === 'short');
+      return northCountries.every(c => {
+        const p = userProgress[c.id] || {};
+        return p.stage1 && p.stage2 && p.stage3;
+      });
+    }
+
+    function updateAmericasSubBarUI() {
+      const subBar = document.getElementById('americasSubBar');
+      if (!subBar) return;
+      if (currentContinentKey === 'americas') {
+        subBar.style.display = 'flex';
+        const northBtn = document.getElementById('subbtn-north');
+        const southBtn = document.getElementById('subbtn-south');
+        const northDone = isNorthAmericaCleared();
+
+        northBtn.classList.toggle('active', americasSubRegion === 'north');
+        southBtn.classList.toggle('active', americasSubRegion === 'south');
+        northBtn.innerText = northDone ? '🍁 北美洲 (✓ 已通關)' : '🍁 北美洲 (8國 · 基礎單字)';
+        southBtn.innerText = northDone ? '🦙 南美洲 (12國 · 進階長單字)' : '🔒 南美洲 (需先過北美洲)';
+      } else {
+        subBar.style.display = 'none';
+      }
+    }
+
+    function switchAmericasRegion(regionKey, force = false) {
+      if (regionKey === 'south' && !force && !isNorthAmericaCleared()) {
+        const northCountries = worldData.filter(c => c.continent === 'americas' && c.wordType === 'short');
+        const clearedCount = northCountries.filter(c => {
+          const p = userProgress[c.id] || {};
+          return p.stage1 && p.stage2 && p.stage3;
+        }).length;
+        alert(`🛂 【南美洲航線尚未開放】\n\n請先完成「北美洲」全部 ${northCountries.length} 個國家的基礎單字關卡（目前進度：${clearedCount} / ${northCountries.length} 國），過關後即可飛往南美洲挑戰進階長單字！`);
+        return;
+      }
+      americasSubRegion = regionKey;
+      focusContinent('americas');
+    }
+
     function focusContinent(continentKey, onComplete = null) {
       currentContinentKey = continentKey;
 
@@ -1643,7 +1947,18 @@
       const targetBtn = document.getElementById(`cbtn-${continentKey}`);
       if(targetBtn) targetBtn.classList.add('active');
 
-      const view = continentViews[continentKey] || continentViews['world'];
+      if (continentKey === 'americas') {
+        if (!isNorthAmericaCleared()) {
+          americasSubRegion = 'north';
+        } else if (americasSubRegion !== 'north' && americasSubRegion !== 'south') {
+          americasSubRegion = 'south';
+        }
+      }
+
+      updateAmericasSubBarUI();
+
+      const viewKey = (continentKey === 'americas') ? `americas_${americasSubRegion}` : continentKey;
+      const view = continentViews[viewKey] || continentViews[continentKey] || continentViews['world'];
       const container = document.getElementById('mapContainer');
       const width = container.clientWidth, height = container.clientHeight;
 
@@ -1652,10 +1967,15 @@
       const tx = width / 2 - k * centerCoords[0];
       const ty = height / 2 - k * centerCoords[1];
 
-      g.transition().duration(800).ease(d3.easeCubicInOut)
+      if (window.activeMapTimer) {
+        window.activeMapTimer.stop();
+        window.activeMapTimer = null;
+      }
+
+      g.interrupt().transition().duration(800).ease(d3.easeCubicInOut)
         .attr("transform", `translate(${tx},${ty}) scale(${k})`);
 
-      flightG.transition().duration(800).ease(d3.easeCubicInOut)
+      flightG.interrupt().transition().duration(800).ease(d3.easeCubicInOut)
         .attr("transform", `translate(${tx},${ty}) scale(${k})`);
 
       const startTime = Date.now();
@@ -1663,7 +1983,7 @@
       
       renderCountryPins();
 
-      d3.timer(() => {
+      window.activeMapTimer = d3.timer(() => {
         const elapsed = Date.now() - startTime;
         const t = Math.min(1, elapsed / 800);
         const easeT = d3.easeCubicInOut(t);
@@ -1677,6 +1997,7 @@
         if (t >= 1) {
           currentTx = tx; currentTy = ty; currentK = k;
           updatePinPositions(tx, ty, k);
+          window.activeMapTimer = null;
           if (onComplete) onComplete();
           return true;
         }
@@ -1716,18 +2037,21 @@
             animPath.attr("stroke-dasharray", "8, 5");
           });
 
+        document.querySelectorAll('.flying-plane-anim').forEach(el => el.remove());
         const mapContainer = document.getElementById('mapContainer');
         const planeEl = document.createElement('div');
         planeEl.className = 'flying-plane-anim';
         planeEl.innerText = getEvolvedPlaneEmoji();
         mapContainer.appendChild(planeEl);
 
-        updatePilotGuide(`🎉 專機正從【${fromCountry.name}】啟航飛往歐洲第一站【${toCountry.name}】！`);
+        updatePilotGuide(`🎉 專機正從【${fromCountry.name}】啟航飛往下一洲第一站【${toCountry.name}】！`);
 
         const startAnim = Date.now();
         const duration = 2200;
+        let hasCompleted = false;
 
-        d3.timer(() => {
+        const flightTimer = d3.timer(() => {
+          if (hasCompleted) return true;
           const elapsed = Date.now() - startAnim;
           const t = Math.min(1, elapsed / duration);
           const easeT = d3.easeCubicInOut(t);
@@ -1744,12 +2068,14 @@
           planeEl.style.transform = `translate(-50%, -50%) rotate(${angle + 45}deg) scale(${1 + Math.sin(t * Math.PI) * 0.45})`;
 
           if (t >= 1) {
+            hasCompleted = true;
+            flightTimer.stop();
             setTimeout(() => {
               planeEl.remove();
               focusContinent(toCountry.continent, () => {
                 if (onFinished) onFinished();
               });
-            }, 500);
+            }, 400);
             return true;
           }
         });
@@ -2068,6 +2394,8 @@
 
       if (!userProgress[currentSelectedCountry.id]) userProgress[currentSelectedCountry.id] = {};
       
+      const prevContinentStars = getContinentBonusStars(currentSelectedCountry.continent);
+      const wasModeAlreadyCleared = Boolean(userProgress[currentSelectedCountry.id][currentModeKey]);
       const wasStage3AlreadyCleared = userProgress[currentSelectedCountry.id].stage3;
       userProgress[currentSelectedCountry.id][currentModeKey] = true;
 
@@ -2131,11 +2459,34 @@
         if (currentIdx !== -1 && currentIdx + 1 < worldData.length) {
           const nextCountry = worldData[currentIdx + 1];
           rewardNotice = `🎉 已開啟下一站：【${nextCountry.name}】！`;
+          if (isJustCompletedAllMainStages && currentSelectedCountry.continent === 'americas' && currentSelectedCountry.wordType === 'short' && nextCountry.wordType === 'long') {
+            americasSubRegion = 'south';
+            rewardNotice = `🎉 北美洲全數通關！已解鎖南美洲航線，下一站：【${nextCountry.name}】！`;
+          }
 
           if (isJustCompletedAllMainStages && currentSelectedCountry.continent !== nextCountry.continent) {
             pendingCrossContinentFlight = {
               from: currentSelectedCountry,
               to: nextCountry
+            };
+          }
+        }
+      }
+
+      // 若該洲主線已全破，且剛透過副本（speed / perfect）湊滿第 3 顆星開通海關，立刻觸發跨洲飛航動畫！
+      if ((currentModeKey === 'speed' || currentModeKey === 'perfect') && !wasModeAlreadyCleared) {
+        const newContinentStars = getContinentBonusStars(currentSelectedCountry.continent);
+        if (prevContinentStars < 3 && newContinentStars >= 3) {
+          const continentCountries = worldData.filter(c => c.continent === currentSelectedCountry.continent);
+          const lastCountryInContinent = continentCountries[continentCountries.length - 1];
+          const lastProg = userProgress[lastCountryInContinent.id] || {};
+          const lastIdx = worldData.findIndex(c => c.id === lastCountryInContinent.id);
+          const nextContCountry = (lastIdx >= 0 && lastIdx < worldData.length - 1) ? worldData[lastIdx + 1] : null;
+
+          if (lastProg.stage3 && nextContCountry && nextContCountry.continent !== currentSelectedCountry.continent) {
+            pendingCrossContinentFlight = {
+              from: lastCountryInContinent,
+              to: nextContCountry
             };
           }
         }
@@ -2160,10 +2511,15 @@
 
       if (isJustCompletedAllMainStages) {
         showPassportStampModal(currentSelectedCountry);
+      } else if (pendingCrossContinentFlight) {
+        const flightInfo = pendingCrossContinentFlight;
+        pendingCrossContinentFlight = null;
+        playCrossContinentFlightAnimation(flightInfo.from, flightInfo.to, () => {
+          showResultModalForStage();
+        });
       } else {
         showResultModalForStage();
       }
-
       updateHeaderStats(true);
       saveGame();
     }
@@ -2244,12 +2600,16 @@
         const currentIdx = worldData.findIndex(c => c.id === currentSelectedCountry.id);
         if (currentIdx !== -1 && currentIdx + 1 < worldData.length) {
           const nextCountry = worldData[currentIdx + 1];
-          // 檢查跨洲副本星門檻
-          if (nextCountry.continent === 'europe' && getContinentBonusStars('asia') < 3) {
-            alert(`🛂 【歐洲海關通行證不足】\n\n前往歐洲前需先在「亞洲」累積 3 顆副本星（目前：${getContinentBonusStars('asia')} / 3 ⭐）！`);
-            focusContinent('asia');
+          // 檢查跨洲副本星門檻（全大洲通用）
+          const gate = checkCrossContinentGate(currentSelectedCountry.continent, nextCountry.continent);
+          if (!gate.allowed) {
+            alert(`🛂 【${gate.toName}海關通行證不足】\n\n前往「${gate.toName}」前需先在「${gate.fromName}」累積 ${gate.requiredStars} 顆副本星（目前：${gate.currentStars} / ${gate.requiredStars} ⭐）！`);
             switchView('mapView');
+            focusContinent(currentSelectedCountry.continent);
             return;
+          }
+          if (nextCountry.continent === 'americas' && nextCountry.wordType === 'long') {
+            americasSubRegion = 'south';
           }
           currentSelectedCountry = nextCountry;
           startCountryMode('stage1');
@@ -2282,17 +2642,17 @@
       document.getElementById('badgeUnlockModal').style.display = 'flex';
     }
 
-    function closeBadgeUnlockModal() {
+function closeBadgeUnlockModal() {
       document.getElementById('badgeUnlockModal').style.display = 'none';
 
       if (pendingCrossContinentFlight) {
         const flightInfo = pendingCrossContinentFlight;
         pendingCrossContinentFlight = null;
-        // 若副本星已滿 3 顆則播放跨洲動畫，否則先回亞洲提示收集星星
-        if (flightInfo.to.continent === 'europe' && getContinentBonusStars('asia') < 3) {
-          focusContinent('asia');
+        const gate = checkCrossContinentGate(flightInfo.from.continent, flightInfo.to.continent);
+        if (!gate.allowed) {
           switchView('mapView');
-          updatePilotGuide(`🛂 亞洲主線全破！還差 ${3 - getContinentBonusStars('asia')} 顆副本星即可啟航飛往歐洲，快挑幾國打暴走或炸彈吧！`);
+          focusContinent(flightInfo.from.continent);
+          updatePilotGuide(`🛂 ${gate.fromName}主線全破！還差 ${gate.requiredStars - gate.currentStars} 顆副本星即可啟航飛往${gate.toName}，快挑幾國打暴走或炸彈吧！`);
         } else {
           playCrossContinentFlightAnimation(flightInfo.from, flightInfo.to, () => {
             showResultModalForStage();
@@ -2302,12 +2662,15 @@
         showResultModalForStage();
       }
     }
-
     function closeResultModal() {
       clearInterval(autoNextInterval);
       document.getElementById('resultModal').style.display = 'none';
-      renderCountryPins();
       switchView('mapView');
+      if (currentContinentKey === 'americas') {
+        focusContinent('americas');
+      } else {
+        renderCountryPins();
+      }
     }
 
     function updateHeaderStats(animateMiles = false) {
@@ -2423,7 +2786,7 @@
     };
     window.onresize = () => {
       initMap();
-      focusContinent('world');
+      focusContinent(currentContinentKey || 'world');
     };
   </script>
 </body>
